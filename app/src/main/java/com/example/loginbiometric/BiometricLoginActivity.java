@@ -18,7 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class BiometricLoginActivity extends AppCompatActivity {
     private CancellationSignal cancellationSignal;
     public void newIntent(Context context,Class cls){
         Intent intent = new Intent(context,cls);
@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_biometric_login);
         Button button = findViewById(R.id.btn_login);
         button.setOnClickListener(new View.OnClickListener() {
             @Override

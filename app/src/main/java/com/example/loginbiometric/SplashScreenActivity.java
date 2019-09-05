@@ -20,7 +20,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (android.os.Build.VERSION.SDK_INT == Build.VERSION_CODES.P){
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), BiometricLoginActivity.class);
                     startActivity(intent);
                     finish();
                 } else {
