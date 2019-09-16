@@ -12,9 +12,13 @@ import androidx.annotation.Nullable;
 
 import com.example.loginbiometric.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class GridViewAdapter extends ArrayAdapter {
     List<Date> dates;
@@ -22,7 +26,7 @@ public class GridViewAdapter extends ArrayAdapter {
     Calendar currentDate;
     LayoutInflater inflater;
     TextView dayNum;
-
+    TextView eventNum;
     public GridViewAdapter(@NonNull Context context, int resource) {
         super(context, resource);
     }
@@ -52,6 +56,7 @@ public class GridViewAdapter extends ArrayAdapter {
             view = inflater.inflate(R.layout.date_single_cell_layout, parent,false);
         }
         dayNum = view.findViewById(R.id.tv_calender_day);
+        eventNum = view.findViewById(R.id.tv_event_day);
         if(displayMonth == currentMonth && displayYear == currentYear) {
            // view.setBackgroundColor(getContext().getResources().getColor(R.color.colorGreen));
 
@@ -64,7 +69,30 @@ public class GridViewAdapter extends ArrayAdapter {
         }
 
         dayNum.setText(String.valueOf(DayNo));
+        Calendar eventCalender = Calendar.getInstance();
+        ArrayList<String> arrayList = new ArrayList<>();
+        for(int i=0; i< events.size(); i++){
+            eventCalender.setTime(convertStringToDate(events.get(i).getDATE()));
+            if(DayNo == eventCalender.get(Calendar.DAY_OF_MONTH) && displayMonth == eventCalender.get(Calendar.MONTH)+1
+            && displayYear == eventCalender.get(Calendar.YEAR)){
+                arrayList.add(events.get(i).getEVENT());
+                eventNum.setText(arrayList.size()+ "EVENTS");
+            }
+        }
         return view;
+    }
+
+    private  Date convertStringToDate(String eventDate) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        Date date = null;
+        try {
+            date = format.parse(eventDate);
+
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
     }
 
     @Override

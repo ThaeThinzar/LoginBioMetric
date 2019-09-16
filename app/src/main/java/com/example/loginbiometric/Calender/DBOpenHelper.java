@@ -10,9 +10,9 @@ import androidx.annotation.Nullable;
 
 public class DBOpenHelper extends SQLiteOpenHelper {
     private static final String CREATE_EVENT_TABLE = "create table " + DBStructure.EVENT_TABLE_NAME + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + DBStructure.EVENT + " TEXT, " + DBStructure.TIME + " TEXT, " + DBStructure.DATE + " TEXT, " + DBStructure.MONTH + "TEXT, "
+            + DBStructure.EVENT + " TEXT, " + DBStructure.TIME + " TEXT, " + DBStructure.DATE + " TEXT, " + DBStructure.MONTH + " TEXT, "
             + DBStructure.YEAR + " TEXT)";
-    private static final String DROP_TABLE = "DROP TABLE IF EXIST " + DBStructure.EVENT_TABLE_NAME;
+    private static final String DROP_TABLE = "DROP TABLE IF EXISTS " + DBStructure.EVENT_TABLE_NAME;
 
     public DBOpenHelper(@Nullable Context context) {
         super(context, DBStructure.DB_NAME, null, DBStructure.DB_VERSION);
@@ -48,7 +48,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     }
     public Cursor readEventPerMonth(String month, String year, SQLiteDatabase database) {
         String[] projections = {DBStructure.EVENT, DBStructure.TIME, DBStructure.DATE, DBStructure.MONTH, DBStructure.YEAR};
-        String selection = DBStructure.MONTH + "=? and " +DBStructure.YEAR + "=?";
+        String selection =DBStructure.MONTH + " =? AND " +DBStructure.YEAR + " =?";
         String[] selectionArgs = {month,year};
         return database.query(DBStructure.EVENT_TABLE_NAME, projections, selection, selectionArgs, null, null, null);
     }

@@ -3,6 +3,7 @@ package com.example.loginbiometric.Calender;
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.Image;
 import android.util.AttributeSet;
@@ -48,11 +49,12 @@ public class CustomCalenderView extends LinearLayout  {
     Context context;
 
     List<Date> dates = new ArrayList<>();
-    List<Events> events = new ArrayList<>();
+    List<Events> eventsList = new ArrayList<>();
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
     SimpleDateFormat monthFormat = new SimpleDateFormat("MMMM", Locale.ENGLISH);
     SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy", Locale.ENGLISH);
+    SimpleDateFormat eventDateFormat = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
 
     AlertDialog alertDialog;
     GridViewAdapter gridViewAdapter;
@@ -119,7 +121,7 @@ public class CustomCalenderView extends LinearLayout  {
                          timePickerDialog.show();
                      }
                  });
-                 String date = dateFormat.format(dates.get(i));
+                 String date = eventDateFormat.format(dates.get(i));
                  String month = monthFormat.format(dates.get(i));
                  String year = yearFormat.format(dates.get(i));
 
@@ -165,14 +167,34 @@ public class CustomCalenderView extends LinearLayout  {
         monthCalender.set(Calendar.DAY_OF_MONTH,1);
         int firstDayofMonth = monthCalender.get(Calendar.DAY_OF_WEEK) - 1;
         monthCalender.add(Calendar.DAY_OF_MONTH, - firstDayofMonth);
+
+      //  collectEventsPerMonth(monthFormat.format(calendar.getTime()),yearFormat.format(calendar.getTime()));
         while (dates.size() < MAX_CALENDARS_DAYS){
             dates.add(monthCalender.getTime());
             monthCalender.add(Calendar.DAY_OF_MONTH, 1);
 
         }
 
-        gridViewAdapter = new GridViewAdapter(context,dates, calendar, events);
+        gridViewAdapter = new GridViewAdapter(context,dates, calendar, eventsList);
         gridLayoutDay.setAdapter(gridViewAdapter);
+    }
+
+    private void collectEventsPerMonth(String month, String year) {
+        eventsList.clear();
+        dpOpenHelper = new DBOpenHelper(context);
+        SQLiteDatabase database = dpOpenHelper.getReadableDatabase();
+        Cursor cursor = dpOpenHelper.readEventPerMonth(month,year,database);
+        while (cursor.moveToNext()) {
+            String mevent = cursor.getString(cursor.getColumnIndex(DBStructure.EVENT));
+            String mtime = cursor.getString(cursor.getColumnIndex(DBStructure.TIME));
+            String mdate = cursor.getString(cursor.getColumnIndex(DBStructure.DATE));
+            String mmonth = cursor.getString(cursor.getColumnIndex(DBStructure.MONTH));
+            String myear = cursor.getString(cursor.getColumnIndex(DBStructure.YEAR));
+            Events events = new Events(mevent, mtime, mdate, month,myear);
+            eventsList.add(events);
+        }
+        cursor.close();
+        dpOpenHelper.close();
     }
    /* @Override
     public void onClick(View view) {
